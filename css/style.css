@@ -100,7 +100,6 @@ main {
 	width: 100%;
 	height: 50%;
 	position: relative;
-	background: rgba(0, 0, 0, 0.3);
 }
 
 .gameField img {
@@ -125,7 +124,7 @@ main {
 	border-radius: 15px;
 	padding: 30px;
 	position: absolute;
-	top: 50%;
+	top: 65%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	display: flex;
@@ -136,7 +135,7 @@ main {
 }
 
 .modal__text {
-	font-size: 34px;
+	font-size: 28px;
 	color: #fff;
 }
 

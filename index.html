@@ -13,7 +13,7 @@
 			src="https://kit.fontawesome.com/0c5c47f3c6.js"
 			crossorigin="anonymous"
 		></script>
-		<script src="js/main.js"></script>
+		<script defer src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css" />
 	</head>
 	<body>
@@ -26,12 +26,9 @@
 					<i class="fas fa-pause"></i>
 				</button>
 				<div class="timer">00 : 00</div>
-				<div class="score">10</div>
+				<div class="score">0</div>
 			</div>
-			<div class="gameField">
-				<img src="img/bug.png" alt="벌레" />
-				<img src="img/carrot.png" alt="당근" />
-			</div>
+			<div class="gameField"></div>
 			<aside class="modal">
 				<div class="modal__contents">
 					<p class="modal__text">GAME OVER</p>
@@ -40,6 +37,11 @@
 					</button>
 				</div>
 			</aside>
+			<audio class="bg" src="sound/bg.mp3"></audio>
+			<audio class="carrot_pull" src="sound/carrot_pull.mp3"></audio>
+			<audio class="bug_pull" src="sound/bug_pull.mp3"></audio>
+			<audio class="game_win" src="sound/game_win.mp3"></audio>
+			<audio class="alert" src="sound/alert.wav"></audio>
 		</main>
 	</body>
 </html>
