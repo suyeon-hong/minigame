@@ -15,25 +15,19 @@ const win_sound = document.querySelector(".game_win");
 const alert_sound = document.querySelector(".alert");
 
 const TOTAL_NUM = 5;
+const TIME = 10;
 let timer;
 let count = 0;
 
 btnStart.addEventListener("click", () => {
-	btnStart.style.display = "none";
-	btnStop.style.display = "inline-block";
 	gameStart();
 });
 
 btnStop.addEventListener("click", () => {
-	btnStop.style.display = "none";
-	btnStart.style.display = "inline-block";
-	bg_sound.pause();
 	gameFinish();
 });
 
 BtnRefresh.addEventListener("click", () => {
-	btnStart.style.display = "none";
-	btnStop.style.display = "inline-block";
 	gameStart();
 	modal.style.display = "none";
 });
@@ -54,13 +48,17 @@ gameField.addEventListener("click", (e) => {
 });
 
 const gameStart = () => {
+	btnStart.style.display = "none";
+	btnStop.style.display = "inline-block";
 	init();
 	bg_sound.play();
-	setTimer(10);
+	setTimer();
 	fillGameField();
 };
 
 const gameFinish = (text) => {
+	btnStop.style.display = "none";
+	btnStart.style.display = "inline-block";
 	bg_sound.pause();
 	clearInterval(timer);
 	openModalBox(text);
@@ -69,11 +67,12 @@ const gameFinish = (text) => {
 const init = () => {
 	gameField.innerHTML = ``;
 	score.innerText = TOTAL_NUM;
+	timeBox.innerText = "10 : 00";
 	count = 0;
 };
 
-const setTimer = (num) => {
-	let time = num;
+const setTimer = () => {
+	let time = TIME;
 
 	timer = setInterval(() => {
 		time -= 1;
