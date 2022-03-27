@@ -1,4 +1,5 @@
 "use strict";
+import Popup from "./popup.js";
 
 const CARROT_SIZE = 80;
 const CARROT_COUNT = 10;
@@ -11,10 +12,6 @@ const score = document.querySelector(".score");
 const gameField = document.querySelector(".gameField");
 const fieldRect = gameField.getBoundingClientRect();
 
-const modal = document.querySelector(".modal");
-const modalText = document.querySelector(".modal__text");
-const BtnRefresh = document.querySelector(".modal__btnRefresh");
-
 const bg_sound = new Audio("./sound/bg.mp3");
 const carrot_sound = new Audio("./sound/carrot_pull.mp3");
 const bug_sound = new Audio("./sound/bug_pull.mp3");
@@ -25,17 +22,16 @@ let timer;
 let count;
 let gameStarted = false;
 
+const gameFinishBanner = new Popup();
+
+gameFinishBanner.setClickListener(gameStart);
+
 gameInfo_button.addEventListener("click", () => {
 	if (gameStarted) {
 		gameFinish();
 	} else {
 		gameStart();
 	}
-});
-
-BtnRefresh.addEventListener("click", () => {
-	gameStart();
-	modal.style.display = "none";
 });
 
 gameField.addEventListener("click", onFieldClick);
@@ -99,14 +95,12 @@ function updateRemainTime(time) {
 }
 
 function openModalBox(reason) {
-	alert_sound.play();
-	modal.style.display = "block";
-	modalText.innerText =
-		reason === "win"
-			? "🎉YOU SUCCESS!"
-			: reason === "lose"
-			? "YOU LOST😥"
-			: "다시 시작하기";
+	if (reason === "win") {
+		win_sound.play();
+	} else {
+		alert_sound.play();
+	}
+	gameFinishBanner.show(reason);
 }
 
 function updateScore(count) {
