@@ -1,6 +1,7 @@
 "use strict";
 import Popup from "./popup.js";
 import Field from "./field.js";
+import * as sound from "./sound.js";
 
 const CARROT_SIZE = 80;
 const CARROT_COUNT = 10;
@@ -10,12 +11,6 @@ const GAME_DURATION_SEC = 10;
 const gameInfo_button = document.querySelector(".gameInfo_button");
 const timeBox = document.querySelector(".timer");
 const score = document.querySelector(".score");
-
-const bg_sound = new Audio("./sound/bg.mp3");
-const carrot_sound = new Audio("./sound/carrot_pull.mp3");
-const bug_sound = new Audio("./sound/bug_pull.mp3");
-const win_sound = new Audio("./sound/game_win.mp3");
-const alert_sound = new Audio("./sound/alert.wav");
 
 let timer;
 let count;
@@ -41,7 +36,7 @@ function gameStart() {
 	init();
 	score.style.visibility = "visible";
 	timeBox.style.visibility = "visible";
-	bg_sound.play();
+	sound.playBackground();
 	startTimer();
 }
 
@@ -49,19 +44,19 @@ function gameFinish(reason) {
 	gameStarted = false;
 	clearInterval(timer);
 	changeIcon();
-	bg_sound.pause();
-	openModalBox(reason);
+	sound.stopBackground();
+	gameFinishBanner.show(reason);
 }
 
 function onItemClick(item) {
 	if (item === "carrot") {
-		carrot_sound.play();
+		sound.playCarrot();
 		count += 1;
 		updateScore(count);
 		CARROT_COUNT === count && gameFinish("win");
 	} else if (item === "bug") {
-		bug_sound.play();
-		gameFinish("lose");
+		sound.playBug();
+		gameFinish("lost");
 	}
 }
 
@@ -90,7 +85,7 @@ function startTimer() {
 
 	timer = setInterval(() => {
 		if (remainTime <= 0) {
-			gameFinish("lose");
+			gameFinish("lost");
 			return;
 		}
 		updateRemainTime(--remainTime);
@@ -101,15 +96,6 @@ function updateRemainTime(time) {
 	const minutes = Math.floor(time / 60);
 	const seconds = time % 60;
 	timeBox.innerText = `${minutes} : ${seconds}`;
-}
-
-function openModalBox(reason) {
-	if (reason === "win") {
-		win_sound.play();
-	} else {
-		alert_sound.play();
-	}
-	gameFinishBanner.show(reason);
 }
 
 function updateScore(count) {

@@ -1,4 +1,5 @@
 "use strict";
+import * as sound from "./sound.js";
 
 export default class Popup {
 	constructor() {
@@ -16,13 +17,18 @@ export default class Popup {
 	}
 
 	show(reason) {
+		let text;
+		if (reason === "win") {
+			sound.playWin();
+			text = "🎉YOU SUCCESS!";
+		} else if (reason === "lost") {
+			text = "YOU LOST😥";
+		} else {
+			sound.playAlert();
+			text = "다시 시작하기";
+		}
 		this.modal.style.display = "block";
-		this.modalText.innerText =
-			reason === "win"
-				? "🎉YOU SUCCESS!"
-				: reason === "lose"
-				? "YOU LOST😥"
-				: "다시 시작하기";
+		this.modalText.innerText = text;
 	}
 
 	hide() {
