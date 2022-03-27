@@ -1,5 +1,6 @@
 "use strict";
 import Popup from "./popup.js";
+import Field from "./field.js";
 
 const CARROT_SIZE = 80;
 const CARROT_COUNT = 10;
@@ -9,8 +10,6 @@ const GAME_DURATION_SEC = 10;
 const gameInfo_button = document.querySelector(".gameInfo_button");
 const timeBox = document.querySelector(".timer");
 const score = document.querySelector(".score");
-const gameField = document.querySelector(".gameField");
-const fieldRect = gameField.getBoundingClientRect();
 
 const bg_sound = new Audio("./sound/bg.mp3");
 const carrot_sound = new Audio("./sound/carrot_pull.mp3");
@@ -23,8 +22,10 @@ let count;
 let gameStarted = false;
 
 const gameFinishBanner = new Popup();
+const gameField = new Field(CARROT_SIZE, CARROT_COUNT, BUG_COUNT);
 
 gameFinishBanner.setClickListener(gameStart);
+gameField.setClickListener(onItemClick);
 
 gameInfo_button.addEventListener("click", () => {
 	if (gameStarted) {
@@ -34,8 +35,6 @@ gameInfo_button.addEventListener("click", () => {
 	}
 });
 
-gameField.addEventListener("click", onFieldClick);
-
 function gameStart() {
 	gameStarted = true;
 	changeIcon();
@@ -44,8 +43,6 @@ function gameStart() {
 	timeBox.style.visibility = "visible";
 	bg_sound.play();
 	startTimer();
-	addItem("carrot", "img/carrot.png", CARROT_COUNT);
-	addItem("bug", "img/bug.png", BUG_COUNT);
 }
 
 function gameFinish(reason) {
@@ -54,6 +51,18 @@ function gameFinish(reason) {
 	changeIcon();
 	bg_sound.pause();
 	openModalBox(reason);
+}
+
+function onItemClick(item) {
+	if (item === "carrot") {
+		carrot_sound.play();
+		count += 1;
+		updateScore(count);
+		CARROT_COUNT === count && gameFinish("win");
+	} else if (item === "bug") {
+		bug_sound.play();
+		gameFinish("lose");
+	}
 }
 
 function changeIcon() {
@@ -69,8 +78,8 @@ function changeIcon() {
 }
 
 function init() {
-	gameField.innerHTML = ``;
 	score.innerText = CARROT_COUNT;
+	gameField.initField();
 	count = 0;
 }
 
@@ -105,40 +114,4 @@ function openModalBox(reason) {
 
 function updateScore(count) {
 	score.innerText = GAME_DURATION_SEC - count;
-}
-
-function onFieldClick(e) {
-	const target = e.target;
-	if (target.nodeName !== "IMG") return;
-
-	if (target.matches(".carrot")) {
-		carrot_sound.play();
-		count += 1;
-		updateScore(count);
-		count === GAME_DURATION_SEC && gameFinish("win");
-	} else if (target.matches(".bug")) {
-		bug_sound.play();
-		gameFinish("lose");
-	}
-	e.target.remove();
-}
-
-function randomNumber(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function addItem(className, src, count) {
-	const x = fieldRect.width - CARROT_SIZE;
-	const y = fieldRect.height - CARROT_SIZE;
-
-	for (let i = 0; i < count; i++) {
-		const img = document.createElement("img");
-
-		img.setAttribute("class", className);
-		img.setAttribute("src", src);
-		img.style.top = `${randomNumber(0, y)}px`;
-		img.style.left = `${randomNumber(0, x)}px`;
-
-		gameField.append(img);
-	}
 }
