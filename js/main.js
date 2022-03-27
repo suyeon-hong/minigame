@@ -1,30 +1,36 @@
-const btnStart = document.querySelector(".btnStart");
-const btnStop = document.querySelector(".btnStop");
+"use strict";
+
+const CARROT_SIZE = 80;
+const CARROT_COUNT = 10;
+const BUG_COUNT = CARROT_COUNT - 2;
+const GAME_DURATION_SEC = 10;
+
+const gameInfo_button = document.querySelector(".gameInfo_button");
 const timeBox = document.querySelector(".timer");
 const score = document.querySelector(".score");
 const gameField = document.querySelector(".gameField");
+const fieldRect = gameField.getBoundingClientRect();
 
 const modal = document.querySelector(".modal");
 const modalText = document.querySelector(".modal__text");
 const BtnRefresh = document.querySelector(".modal__btnRefresh");
 
-const bg_sound = document.querySelector(".bg");
-const carrot_sound = document.querySelector(".carrot_pull");
-const bug_sound = document.querySelector(".bug_pull");
-const win_sound = document.querySelector(".game_win");
-const alert_sound = document.querySelector(".alert");
+const bg_sound = new Audio("./sound/bg.mp3");
+const carrot_sound = new Audio("./sound/carrot_pull.mp3");
+const bug_sound = new Audio("./sound/bug_pull.mp3");
+const win_sound = new Audio("./sound/game_win.mp3");
+const alert_sound = new Audio("./sound/alert.wav");
 
-const TOTAL_NUM = 5;
-const TIME = 10;
 let timer;
-let count = 0;
+let count;
+let gameStarted = false;
 
-btnStart.addEventListener("click", () => {
-	gameStart();
-});
-
-btnStop.addEventListener("click", () => {
-	gameFinish();
+gameInfo_button.addEventListener("click", () => {
+	if (gameStarted) {
+		gameFinish();
+	} else {
+		gameStart();
+	}
 });
 
 BtnRefresh.addEventListener("click", () => {
@@ -32,77 +38,113 @@ BtnRefresh.addEventListener("click", () => {
 	modal.style.display = "none";
 });
 
-gameField.addEventListener("click", (e) => {
-	if (e.target.nodeName !== "IMG") return;
+gameField.addEventListener("click", onFieldClick);
 
-	if (e.target.getAttribute("alt") === "당근") {
+function gameStart() {
+	gameStarted = true;
+	changeIcon();
+	init();
+	score.style.visibility = "visible";
+	timeBox.style.visibility = "visible";
+	bg_sound.play();
+	startTimer();
+	addItem("carrot", "img/carrot.png", CARROT_COUNT);
+	addItem("bug", "img/bug.png", BUG_COUNT);
+}
+
+function gameFinish(reason) {
+	gameStarted = false;
+	clearInterval(timer);
+	changeIcon();
+	bg_sound.pause();
+	openModalBox(reason);
+}
+
+function changeIcon() {
+	const icon = document.querySelector(".gameInfo_button i");
+
+	if (gameStarted) {
+		icon.classList.add("fa-pause");
+		icon.classList.remove("fa-play");
+	} else {
+		icon.classList.add("fa-play");
+		icon.classList.remove("fa-pause");
+	}
+}
+
+function init() {
+	gameField.innerHTML = ``;
+	score.innerText = CARROT_COUNT;
+	count = 0;
+}
+
+function startTimer() {
+	let remainTime = GAME_DURATION_SEC;
+
+	updateRemainTime(remainTime);
+
+	timer = setInterval(() => {
+		if (remainTime <= 0) {
+			gameFinish("lose");
+			return;
+		}
+		updateRemainTime(--remainTime);
+	}, 1000);
+}
+
+function updateRemainTime(time) {
+	const minutes = Math.floor(time / 60);
+	const seconds = time % 60;
+	timeBox.innerText = `${minutes} : ${seconds}`;
+}
+
+function openModalBox(reason) {
+	alert_sound.play();
+	modal.style.display = "block";
+	modalText.innerText =
+		reason === "win"
+			? "🎉YOU SUCCESS!"
+			: reason === "lose"
+			? "YOU LOST😥"
+			: "다시 시작하기";
+}
+
+function updateScore(count) {
+	score.innerText = GAME_DURATION_SEC - count;
+}
+
+function onFieldClick(e) {
+	const target = e.target;
+	if (target.nodeName !== "IMG") return;
+
+	if (target.matches(".carrot")) {
 		carrot_sound.play();
 		count += 1;
-		score.innerText = TOTAL_NUM - count;
-		count === TOTAL_NUM && gameFinish("win");
-	} else if (e.target.getAttribute("alt") === "벌레") {
+		updateScore(count);
+		count === GAME_DURATION_SEC && gameFinish("win");
+	} else if (target.matches(".bug")) {
 		bug_sound.play();
 		gameFinish("lose");
 	}
 	e.target.remove();
-});
+}
 
-const gameStart = () => {
-	btnStart.style.display = "none";
-	btnStop.style.display = "inline-block";
-	init();
-	bg_sound.play();
-	setTimer();
-	fillGameField();
-};
+function randomNumber(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-const gameFinish = (text) => {
-	btnStop.style.display = "none";
-	btnStart.style.display = "inline-block";
-	bg_sound.pause();
-	clearInterval(timer);
-	openModalBox(text);
-};
+function addItem(className, src, count) {
+	const x = fieldRect.width - CARROT_SIZE;
+	const y = fieldRect.height - CARROT_SIZE;
 
-const init = () => {
-	gameField.innerHTML = ``;
-	score.innerText = TOTAL_NUM;
-	timeBox.innerText = "10 : 00";
-	count = 0;
-};
+	for (let i = 0; i < count; i++) {
+		const img = document.createElement("img");
 
-const setTimer = () => {
-	let time = TIME;
+		img.setAttribute("class", className);
+		img.setAttribute("src", src);
+		img.style.top = `${randomNumber(0, y)}px`;
+		img.style.left = `${randomNumber(0, x)}px`;
 
-	timer = setInterval(() => {
-		time -= 1;
-		timeBox.innerText = `${time} : 00`;
-		time === 0 && gameFinish("lose");
-	}, 1000);
-};
-
-const openModalBox = (text) => {
-	alert_sound.play();
-	modal.style.display = "block";
-	modalText.innerText =
-		text === "win"
-			? "🎉YOU SUCCESS!"
-			: text === "lose"
-			? "벌레를 잡았어요😥"
-			: "다시 시작하기";
-};
-
-const fillGameField = () => {
-	for (let i = 0; i < TOTAL_NUM; i++) {
-		const posX = Math.random() * 80;
-		const posY = Math.random() * 80;
-
-		gameField.innerHTML += `<img src="img/carrot.png" alt="당근" style="top: ${posX}%; left: ${posY}%" />`;
+		gameField.append(img);
 	}
-	for (let i = 0; i < TOTAL_NUM - 2; i++) {
-		const posX = Math.random() * 80;
-		const posY = Math.random() * 80;
-
-		gameField.innerHTML += `<img src="img/bug.png" alt="벌레" style="top: ${posX}%; left: ${posY}%" />`;
-	}
-};
+}

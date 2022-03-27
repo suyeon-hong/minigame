@@ -49,8 +49,7 @@ main {
 	padding-top: 70px;
 }
 
-.btnStart,
-.btnStop {
+.gameInfo_button {
 	width: 80px;
 	height: 55px;
 	background: #ff9f45;
@@ -61,14 +60,9 @@ main {
 	margin-bottom: 20px;
 }
 
-.btnStart:hover,
-.btnStop:hover {
+.gameInfo_button:hover {
 	background: #f76e11;
-	font-size: 22px;
-}
-
-.btnStop {
-	display: none;
+	transform: scale(1.1);
 }
 
 .timer {
@@ -81,6 +75,7 @@ main {
 	margin-bottom: 20px;
 	font-size: 38px;
 	line-height: 56px;
+	visibility: hidden;
 }
 
 .score {
@@ -94,6 +89,7 @@ main {
 	font-weight: bold;
 	line-height: 70px;
 	color: #fff;
+	visibility: hidden;
 }
 
 .gameField {
@@ -105,6 +101,11 @@ main {
 .gameField img {
 	cursor: pointer;
 	position: absolute;
+	transition: 0.1s ease-in;
+}
+
+.gameField img:hover {
+	transform: scale(1.1);
 }
 
 .modal {
