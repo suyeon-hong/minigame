@@ -18,12 +18,16 @@ export default class Field {
 		this.onItemClick = onItemClick;
 	}
 
+	updateCount() {
+		this.carrotCount += 2;
+		this.bugCount += 2;
+	}
+
 	onClick = (e) => {
 		const target = e.target;
 		if (target.nodeName !== "IMG") return;
 
 		if (target.matches(`.${ItemType.carrot}`)) {
-			console.log(ItemType.carrot);
 			e.target.remove();
 			this.onItemClick && this.onItemClick(ItemType.carrot);
 		} else if (target.matches(`.${ItemType.bug}`)) {

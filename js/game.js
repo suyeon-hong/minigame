@@ -21,13 +21,13 @@ export class GameBuilder {
 		this.gameField = new Field(carrotCount, bugCount);
 		this.gameField.setClickListener(this.onItemClick);
 
-		this.timer;
-		this.count;
+		this.timer = undefined;
+		this.count = 0;
 		this.gameStarted = false;
 
 		this.gameInfo_button.addEventListener("click", () => {
 			if (this.gameStarted) {
-				this.finish(Reason.cancle);
+				this.finish(Reason.cancle, this.count);
 			} else {
 				this.start();
 			}
@@ -48,12 +48,12 @@ export class GameBuilder {
 		this.startTimer();
 	};
 
-	finish(reason) {
+	finish(reason, count) {
 		this.gameStarted = false;
 		clearInterval(this.timer);
 		this.changeIcon();
 		sound.stopBackground();
-		this.onGameStop && this.onGameStop(reason);
+		this.onGameStop && this.onGameStop(reason, count);
 	}
 
 	onItemClick = (item) => {
@@ -61,10 +61,10 @@ export class GameBuilder {
 			sound.playCarrot();
 			this.count += 1;
 			this.updateScore(this.count);
-			this.carrotCount === this.count && this.finish(Reason.win);
+			this.carrotCount === this.count && this.finish(Reason.win, this.count);
 		} else if (item === "bug") {
 			sound.playBug();
-			this.finish(Reason.lose);
+			this.finish(Reason.lose, this.count);
 		}
 	};
 
@@ -107,6 +107,13 @@ export class GameBuilder {
 	}
 
 	updateScore(count) {
-		this.score.innerText = this.gameDuration - count;
+		this.score.innerText = this.carrotCount - count;
+	}
+
+	setNextStage() {
+		this.gameDuration += 2;
+		this.carrotCount += 2;
+		this.bugCount += 2;
+		this.gameField.updateCount();
 	}
 }

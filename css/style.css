@@ -131,6 +131,14 @@ main {
 	box-shadow: 2px 2px 20px rgba(247, 110, 17, 0.3);
 }
 
+.modal__title {
+	font-size: 20px;
+	text-align: center;
+	font-weight: bold;
+	color: #fc4f4f;
+	display: none;
+}
+
 .modal__text {
 	font-size: 28px;
 	color: #fff;

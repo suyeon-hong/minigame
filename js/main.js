@@ -3,28 +3,32 @@ import Popup from "./popup.js";
 import { GameBuilder, Reason } from "./game.js";
 import * as sound from "./sound.js";
 
+let totalScore = 0;
+
 const gameFinishBanner = new Popup();
-const game = new GameBuilder(20, 15, 20);
+const game = new GameBuilder(10, 8, 10);
 
 gameFinishBanner.setClickListener(game.start);
-game.setGameStopListener((reason) => {
+game.setGameStopListener((reason, count) => {
 	let message;
+	totalScore += count;
 
 	switch (reason) {
 		case Reason.win:
 			sound.playWin();
-			message = "🎉YOU SUCCESS!";
+			game.setNextStage();
+			message = `🎉 ${totalScore} 🎉`;
 			break;
 		case Reason.lose:
-			sound.playAlert();
-			message = "YOU LOST😥";
+			message = `😥 ${totalScore} 😥`;
+			totalScore = 0;
 			break;
 		case Reason.cancle:
 			sound.playAlert();
-			message = "REPLAY❓";
+			message = "REPLAY ❓";
 			break;
 		default:
 			throw new Error("not valid reason");
 	}
-	gameFinishBanner.show(message);
+	gameFinishBanner.show(message, reason);
 });
