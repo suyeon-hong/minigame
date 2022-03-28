@@ -26,17 +26,13 @@ body {
 	justify-content: center;
 	align-items: center;
 	font-family: "Noto Sans KR", sans-serif;
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
 	user-select: none;
+	background: #000;
 }
 
 main {
-	width: 80vw;
-	height: 80vh;
+	width: 900px;
+	height: 700px;
 	border-radius: 30px;
 	overflow: hidden;
 	background: url(../img/background.png) no-repeat center/cover;
