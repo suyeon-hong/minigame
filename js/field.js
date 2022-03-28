@@ -1,8 +1,12 @@
 "use strict";
+const CARROT_SIZE = 80;
+const ItemType = Object.freeze({
+	carrot: "carrot",
+	bug: "bug",
+});
 
 export default class Field {
-	constructor(CARROT_SIZE, CARROT_COUNT, BUG_COUNT) {
-		this.carrotSize = CARROT_SIZE;
+	constructor(CARROT_COUNT, BUG_COUNT) {
 		this.carrotCount = CARROT_COUNT;
 		this.bugCount = BUG_COUNT;
 		this.gameField = document.querySelector(".gameField");
@@ -18,17 +22,18 @@ export default class Field {
 		const target = e.target;
 		if (target.nodeName !== "IMG") return;
 
-		if (target.matches(".carrot")) {
+		if (target.matches(`.${ItemType.carrot}`)) {
+			console.log(ItemType.carrot);
 			e.target.remove();
-			this.onItemClick && this.onItemClick("carrot");
-		} else if (target.matches(".bug")) {
-			this.onItemClick && this.onItemClick("bug");
+			this.onItemClick && this.onItemClick(ItemType.carrot);
+		} else if (target.matches(`.${ItemType.bug}`)) {
+			this.onItemClick && this.onItemClick(ItemType.bug);
 		}
 	};
 
 	addItem(className, src, count) {
-		const x = this.fieldRect.width - this.carrotSize;
-		const y = this.fieldRect.height - this.carrotSize;
+		const x = this.fieldRect.width - CARROT_SIZE;
+		const y = this.fieldRect.height - CARROT_SIZE;
 
 		for (let i = 0; i < count; i++) {
 			const img = document.createElement("img");
@@ -43,8 +48,8 @@ export default class Field {
 	}
 	initField() {
 		this.gameField.innerHTML = ``;
-		this.addItem("carrot", "img/carrot.png", this.carrotCount);
-		this.addItem("bug", "img/bug.png", this.bugCount);
+		this.addItem(ItemType.carrot, "img/carrot.png", this.carrotCount);
+		this.addItem(ItemType.bug, "img/bug.png", this.bugCount);
 	}
 }
 

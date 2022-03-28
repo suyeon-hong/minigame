@@ -1,27 +1,27 @@
 "use strict";
 import Popup from "./popup.js";
-import Game from "./game.js";
+import { GameBuilder, Reason } from "./game.js";
 import * as sound from "./sound.js";
 
 const gameFinishBanner = new Popup();
-const game = new Game(20, 15, 20);
+const game = new GameBuilder(20, 15, 20);
 
 gameFinishBanner.setClickListener(game.start);
 game.setGameStopListener((reason) => {
 	let message;
 
 	switch (reason) {
-		case "win":
+		case Reason.win:
 			sound.playWin();
 			message = "🎉YOU SUCCESS!";
 			break;
-		case "lose":
+		case Reason.lose:
 			sound.playAlert();
 			message = "YOU LOST😥";
 			break;
-		case "stop":
+		case Reason.cancle:
 			sound.playAlert();
-			message = "다시 시작하기";
+			message = "REPLAY❓";
 			break;
 		default:
 			throw new Error("not valid reason");

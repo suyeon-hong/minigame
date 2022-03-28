@@ -2,9 +2,13 @@
 import Field from "./field.js";
 import * as sound from "./sound.js";
 
-const CARROT_SIZE = 80;
+export const Reason = Object.freeze({
+	win: "win",
+	lose: "lose",
+	cancle: "cancle",
+});
 
-export default class Game {
+export class GameBuilder {
 	constructor(carrotCount, bugCount, gameDuration) {
 		this.carrotCount = carrotCount;
 		this.bugCount = bugCount;
@@ -14,7 +18,7 @@ export default class Game {
 		this.timeBox = document.querySelector(".timer");
 		this.score = document.querySelector(".score");
 
-		this.gameField = new Field(CARROT_SIZE, carrotCount, bugCount);
+		this.gameField = new Field(carrotCount, bugCount);
 		this.gameField.setClickListener(this.onItemClick);
 
 		this.timer;
@@ -23,7 +27,7 @@ export default class Game {
 
 		this.gameInfo_button.addEventListener("click", () => {
 			if (this.gameStarted) {
-				this.finish("stop");
+				this.finish(Reason.cancle);
 			} else {
 				this.start();
 			}
@@ -57,10 +61,10 @@ export default class Game {
 			sound.playCarrot();
 			this.count += 1;
 			this.updateScore(this.count);
-			this.carrotCount === this.count && this.finish("win");
+			this.carrotCount === this.count && this.finish(Reason.win);
 		} else if (item === "bug") {
 			sound.playBug();
-			this.finish("lose");
+			this.finish(Reason.lose);
 		}
 	};
 
@@ -89,7 +93,7 @@ export default class Game {
 
 		this.timer = setInterval(() => {
 			if (remainTime <= 0) {
-				this.finish("lose");
+				this.finish(Reason.lose);
 				return;
 			}
 			this.updateRemainTime(--remainTime);
