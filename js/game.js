@@ -14,7 +14,7 @@ export class GameBuilder {
 		this.bugCount = bugCount;
 		this.gameDuration = gameDuration;
 
-		this.gameInfo_button = document.querySelector(".gameInfo_button");
+		this.gameInfo_button = document.querySelector(".gameInfo_button_play");
 		this.timeBox = document.querySelector(".timer");
 		this.score = document.querySelector(".score");
 
@@ -69,7 +69,7 @@ export class GameBuilder {
 	};
 
 	changeIcon() {
-		const icon = document.querySelector(".gameInfo_button i");
+		const icon = this.gameInfo_button.querySelector("i");
 
 		if (this.gameStarted) {
 			icon.classList.add("fa-pause");
@@ -93,7 +93,7 @@ export class GameBuilder {
 
 		this.timer = setInterval(() => {
 			if (remainTime <= 0) {
-				this.finish(Reason.lose);
+				this.finish(Reason.lose, this.count);
 				return;
 			}
 			this.updateRemainTime(--remainTime);
