@@ -19,8 +19,8 @@ export default class Field {
 	}
 
 	updateCount() {
-		this.carrotCount += 2;
-		this.bugCount += 2;
+		this.carrotCount += 5;
+		this.bugCount += 5;
 	}
 
 	onClick = (e) => {

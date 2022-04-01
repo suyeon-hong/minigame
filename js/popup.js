@@ -7,6 +7,7 @@ export default class Popup {
 		this.modalTitle = document.querySelector(".modal__title");
 		this.modalText = document.querySelector(".modal__text");
 		this.BtnRefresh = document.querySelector(".modal__btnRefresh");
+
 		this.BtnRefresh.addEventListener("click", () => {
 			this.onClick && this.onClick();
 			this.hide();
@@ -15,6 +16,10 @@ export default class Popup {
 
 	setClickListener(onClick) {
 		this.onClick = onClick;
+	}
+
+	setAddRecord(addRecord) {
+		this.addRecord = addRecord;
 	}
 
 	show(message, reason) {

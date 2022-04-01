@@ -6,7 +6,7 @@ import * as sound from "./sound.js";
 let totalScore = 0;
 
 const gameFinishBanner = new Popup();
-const game = new GameBuilder(10, 8, 10);
+const game = new GameBuilder(20, 18, 18);
 
 gameFinishBanner.setClickListener(game.start);
 game.setGameStopListener((reason, count) => {
@@ -21,6 +21,7 @@ game.setGameStopListener((reason, count) => {
 			break;
 		case Reason.lose:
 			message = `😥 ${totalScore} 😥`;
+			game.addRecord(totalScore);
 			totalScore = 0;
 			break;
 		case Reason.cancle:

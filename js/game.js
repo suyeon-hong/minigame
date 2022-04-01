@@ -14,6 +14,8 @@ export class GameBuilder {
 		this.bugCount = bugCount;
 		this.gameDuration = gameDuration;
 
+		this.main = document.querySelector("main");
+		this.btnRecord = document.querySelector(".gameInfo_button_record");
 		this.gameInfo_button = document.querySelector(".gameInfo_button_play");
 		this.timeBox = document.querySelector(".timer");
 		this.score = document.querySelector(".score");
@@ -24,6 +26,8 @@ export class GameBuilder {
 		this.timer = undefined;
 		this.count = 0;
 		this.gameStarted = false;
+		this.recentRecordList = JSON.parse(localStorage.getItem("recordList"));
+		if (this.recentRecordList === null) this.recentRecordList = [];
 
 		this.gameInfo_button.addEventListener("click", () => {
 			if (this.gameStarted) {
@@ -32,6 +36,8 @@ export class GameBuilder {
 				this.start();
 			}
 		});
+		this.btnRecord.addEventListener("click", this.showRecordList);
+		this.main.addEventListener("click", this.removeRecordList);
 	}
 
 	setGameStopListener(onGameStop) {
@@ -111,9 +117,45 @@ export class GameBuilder {
 	}
 
 	setNextStage() {
-		this.gameDuration += 2;
-		this.carrotCount += 2;
-		this.bugCount += 2;
+		this.gameDuration += 5;
+		this.carrotCount += 5;
+		this.bugCount += 5;
 		this.gameField.updateCount();
 	}
+
+	addRecord = (score) => {
+		const newRecord = { score };
+		this.recentRecordList.push(newRecord);
+		localStorage.setItem("recordList", JSON.stringify(this.recentRecordList));
+	};
+
+	showRecordList = () => {
+		const recordList = document.createElement("aside");
+		let html = "";
+
+		recordList.setAttribute("class", "recordList");
+
+		this.recentRecordList &&
+			this.recentRecordList.map((data, index) => {
+				html += `
+				<li key=${index}>${data.score}점</li>
+			`;
+			});
+		recordList.innerHTML = `
+			<div class="recordListContainer">
+			<ul>${html}</ul>
+			<span class="btnClose"></span>
+			</div>
+		`;
+		this.main.append(recordList);
+	};
+
+	removeRecordList = (e) => {
+		const btnClose = document.querySelector(".btnClose");
+
+		if (!btnClose) return;
+
+		const target = e.target;
+		if (target === btnClose) btnClose.closest(".recordList").remove();
+	};
 }
